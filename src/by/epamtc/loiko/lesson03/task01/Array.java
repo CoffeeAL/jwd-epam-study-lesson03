@@ -2,6 +2,7 @@ package by.epamtc.loiko.lesson03.task01;
 
 import by.epamtc.loiko.lesson03.task02.Limit;
 import by.epamtc.loiko.lesson03.util.ArrayUtil;
+import by.epamtc.loiko.lesson03.util.NumberUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,130 +27,80 @@ public class Array implements Serializable {
 
     public Array(int initialArrayCapacity) {
         this.initialArrayCapacity = initialArrayCapacity;
-        currentIntArray = new int[initialArrayCapacity];
+        currentIntArray = new int[this.initialArrayCapacity];
     }
 
     public Array(int[] intArray) {
         initialArrayCapacity = intArray.length;
-        this.currentIntArray = intArray;
+        currentIntArray = intArray;
     }
 
     public void bubbleSortArray() {
-        ArrayUtil.bubbleSortArray(currentIntArray);
+        ArrayUtil.bubbleSortArray(this);
     }
 
     public void insertionSortArray() {
-        ArrayUtil.insertionSortArray(currentIntArray);
+        ArrayUtil.insertionSortArray(this);
     }
 
     public void mergeSortArray() {
-        ArrayUtil.mergeSort(currentIntArray, 0, currentIntArray.length - 1);
+        ArrayUtil.mergeSort(this, 0,
+                currentIntArray.length - 1);
     }
 
-    public void findElement(int value) {
-        mergeSortArray();
-        binarySearch(0, currentIntArray.length - 1, value);
-    }
-
-    public void binarySearch(int firstIndex, int lastIndex, int searchValue) {
-        int position;
-        int comparisonCount = 1;
-        position = (firstIndex + lastIndex) / 2;
-        while ((currentIntArray[position] != searchValue) && (firstIndex <= lastIndex)) {
-            comparisonCount++;
-            if (currentIntArray[position] > searchValue) {
-                lastIndex = position - 1;
+    public int binarySearchElement(Interval interval, int valueForSearch) {
+        int index = -1;
+        int borderIndex = (interval.getFirstIndex() + interval.getLastIndex()) / 2;
+        if (currentIntArray[borderIndex] == valueForSearch) {
+            index = borderIndex;
+        }
+        while ((currentIntArray[borderIndex] != valueForSearch) && (interval.getFirstIndex() <= interval.getLastIndex())) {
+            if (currentIntArray[borderIndex] > valueForSearch) {
+                interval.setLastIndex(borderIndex - 1);
             } else {
-                firstIndex = position + 1;
+                interval.setFirstIndex(borderIndex + 1);
             }
-            position = (firstIndex + lastIndex) / 2;
+            borderIndex = (interval.getFirstIndex() + interval.getLastIndex()) / 2;
+            if (currentIntArray[borderIndex] == valueForSearch) {
+                index = borderIndex;
+            }
         }
-        if (firstIndex <= lastIndex) {
-            System.out.println(searchValue + " является " + ++position + " элементом в отсортированном массиве");
-            System.out.println("Метод бинарного поиска нашел число после " + comparisonCount +
-                    " сравнений");
-        } else {
-            System.out.println("Элемент не найден в массиве. Метод бинарного поиска закончил работу после "
-                    + comparisonCount + " сравнений");
-        }
+        return index;
     }
 
     public int findLimitElement(Limit limit) {
-        return ArrayUtil.findElement(currentIntArray, limit);
+        int result = ArrayUtil.findLimitElement(this, limit);
+        return result;
     }
 
-    public void printPrimesNumbersFromArray() {
-        System.out.print("Простые числа из массива: ");
-        findPrimeNumbers();
-        System.out.println();
-    }
-
-    public void findPrimeNumbers() {
+    public String findAllPrimeNumbers() {
+        StringBuilder primeNumbers = new StringBuilder();
         for (int i = 0; i < currentIntArray.length; i++) {
-            if (isPrimeNumber(currentIntArray[i])) {
-                System.out.print(currentIntArray[i] + " ");
+            if (NumberUtil.isPrimeNumber(currentIntArray[i])) {
+                primeNumbers.append(currentIntArray[i] + " ");
             }
         }
+        return primeNumbers.toString().trim();
     }
 
-    public boolean isPrimeNumber(int number) {
-        if (number <= 1) {
-            return false;
-        }
-        for (int i = 2; i < number; i++) {
-            if (number % i == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void printAllFibonacciNumbers() {
-        System.out.print("Числа Фибоначчи: ");
+    public String findAllFibonacciNumbers() {
+        StringBuilder fibonacciNumbers = new StringBuilder();
         for (int i = 0; i < currentIntArray.length; i++) {
-            if (isFibonacciNumber(currentIntArray[i])) {
-                System.out.print(currentIntArray[i] + " ");
+            if (NumberUtil.isFibonacciNumber(currentIntArray[i])) {
+                fibonacciNumbers.append(currentIntArray[i] + " ");
             }
         }
-        System.out.println();
+        return fibonacciNumbers.toString().trim();
     }
 
-    public boolean isFibonacciNumber(int number) {
-        if (number < 0) {
-            return false;
-        }
-        if (number == 0 || number == 1) {
-            return true;
-        }
-        int previous = 1;
-        int next = previous;
-        while (next < number) {
-            int temp = next;
-            next += previous;
-            previous = temp;
-            if (next == number) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void printAllThreeDifferentDigitNumbers() {
-        System.out.print("Трёхзначные числа со всеми разными цифрами: ");
+    public String findAllThreeDifferentDigitNumbers() {
+        StringBuilder threeDigitNumbersWithDifferentDigits = new StringBuilder();
         for (int i = 0; i < currentIntArray.length; i++) {
-            currentIntArray[i] = Math.abs(currentIntArray[i]);
-            if (currentIntArray[i] > 99 && currentIntArray[i] < 1000 && hasDifferentDigits(currentIntArray[i])) {
-                System.out.println(currentIntArray[i]);
+            if (NumberUtil.hasDifferentDigitsThreeDigitNumber(currentIntArray[i])) {
+                threeDigitNumbersWithDifferentDigits.append(currentIntArray[i] + " ");
             }
         }
-        System.out.println();
-    }
-
-    public boolean hasDifferentDigits(int number) {
-        int units = number % 10;
-        int dozens = (number - units) / 10 % 10;
-        int hundreds = (number - dozens * 10 - units) / 100;
-        return (units == dozens || units == hundreds || dozens == hundreds) ? false : true;
+        return threeDigitNumbersWithDifferentDigits.toString().trim();
     }
 
     public void fillArrayFromConsole() {
@@ -162,7 +113,7 @@ public class Array implements Serializable {
         fillArray(scanner);
     }
 
-    public void fillArray(Scanner scanner) {
+    private void fillArray(Scanner scanner) {
         int i = 0;
         while (scanner.hasNextInt()) {
             currentIntArray[i++] = scanner.nextInt();
@@ -172,18 +123,10 @@ public class Array implements Serializable {
         }
     }
 
-    public void fillArrayWithRandomNumbers(int randomInterval) {
+    public void fillArrayWithRandomNumbers(int limit) {
         for (int i = 0; i < currentIntArray.length; i++) {
-            currentIntArray[i] = (int) (Math.random() * randomInterval);
+            currentIntArray[i] = (int) (Math.random() * limit);
         }
-    }
-
-    public int getInitialArrayCapacity() {
-        return initialArrayCapacity;
-    }
-
-    public void setInitialArrayCapacity(int initialArrayCapacity) {
-        this.initialArrayCapacity = initialArrayCapacity;
     }
 
     public int[] getCurrentIntArray() {
@@ -196,12 +139,16 @@ public class Array implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Array)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Array)) {
+            return false;
+        }
         Array comparedArray = (Array) o;
         int[] targetArray = comparedArray.currentIntArray;
         if (currentIntArray.length != targetArray.length) return false;
-        for (int i : targetArray) {
+        for (int i = 0; i < currentIntArray.length; i++) {
             if (currentIntArray[i] != targetArray[i]) {
                 return false;
             }

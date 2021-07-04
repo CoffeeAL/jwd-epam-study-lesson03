@@ -9,18 +9,18 @@ public enum TypeSorting {
     ASCENDING ("по возрастанию"),
     DESCENDING("по убыванию");
 
-    private String name;
+    private String type;
 
-    TypeSorting(String name) {
-        this.name = name;
+    TypeSorting(String type) {
+        this.type = type;
     }
 
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
     }
 
     @Override
     public String toString() {
-        return "TypeSorting{name = " + name + "}";
+        return "TypeSorting{name = " + type + "}";
     }
 }

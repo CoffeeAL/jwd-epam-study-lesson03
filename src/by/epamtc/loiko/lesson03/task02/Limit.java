@@ -9,18 +9,18 @@ public enum Limit {
     MAX_ELEMENT ("по максимальному значению"),
     MIN_ELEMENT ("по минимальному значению");
 
-    private String limit;
+    private String border;
 
-    Limit(String limit) {
-        this.limit = limit;
+    Limit(String border) {
+        this.border = border;
     }
 
-    public String getLimit() {
-        return limit;
+    public String getBorder() {
+        return border;
     }
 
     @Override
     public String toString() {
-        return "Limit{limit = " + limit + "}";
+        return "Limit{limit = " + border + "}";
     }
 }

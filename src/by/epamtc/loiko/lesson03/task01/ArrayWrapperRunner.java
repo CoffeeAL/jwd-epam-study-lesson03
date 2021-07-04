@@ -34,7 +34,7 @@ public class ArrayWrapperRunner {
 
     public static void main(String[] args) {
         try {
-            arrayDemo();
+            arrayStandardDemo();
             arrayFromConsoleDemo(DEFAULT_CAPACITY);
             arrayRandomDemo(DEFAULT_CAPACITY, DEFAULT_INTERVAL);
             arrayFromFileDemo(DEFAULT_CAPACITY);
@@ -43,14 +43,29 @@ public class ArrayWrapperRunner {
         }
     }
 
-    public static void arrayDemo() throws NullArrayException {
+    public static void arrayStandardDemo() throws NullArrayException {
         System.out.println("Демонстрация массива, заполненного стандартным способом.");
         int[] sourceArray = {4, -54, 5, 1, 17, 55, 567};
         Array array = new Array(sourceArray);
-        int[] targetArray = array.getCurrentIntArray();
+        int[] arrayAsWrapperField = array.getCurrentIntArray();
         array.mergeSortArray();
-        array.findElement(4);
         printReport(array);
+        Interval interval = new Interval(0, arrayAsWrapperField.length - 1);
+        int valueForBinarySearch = 4;
+        int binarySearchIndex = array.binarySearchElement(interval, valueForBinarySearch);
+        if (binarySearchIndex == -1) {
+            printReportElementAbsent(valueForBinarySearch);
+        } else {
+            printReportElementExists(valueForBinarySearch, binarySearchIndex);
+        }
+    }
+
+    public static void printReportElementAbsent(int searchValue) {
+        System.out.printf("Элемент %d в массиве не найден\n", searchValue);
+    }
+
+    public static void printReportElementExists(int searchValue, int index) {
+        System.out.printf("%d имеет индекс %d в отсортированном массиве\n", searchValue, index);
     }
 
     public static void arrayFromConsoleDemo(int arrayCapacity)
@@ -82,6 +97,40 @@ public class ArrayWrapperRunner {
         printReport(array);
     }
 
+    public static void printReport(Array array) throws NullArrayException {
+        checkArrayNotNull(array);
+        System.out.println(array);
+        System.out.println("Минимальный элемент массива: " + array.findLimitElement(Limit.MIN_ELEMENT));
+        System.out.println("Максимальный элемент массива: " + array.findLimitElement(Limit.MAX_ELEMENT));
+        printPrimesNumbersFromArray(array);
+        printFibonacciNumbersFromArray(array);
+        printThreeDifferentDigitNumbersFromArray(array);
+    }
+
+    private static void printPrimesNumbersFromArray(Array array) {
+        System.out.print("Простые числа из массива: ");
+        String allPrimeNumbers = array.findAllPrimeNumbers();
+        System.out.println(allPrimeNumbers);
+    }
+
+    private static void printFibonacciNumbersFromArray(Array array) {
+        System.out.print("Числа Фибоначчи из массива: ");
+        String allFibonacciNumbers = array.findAllFibonacciNumbers();
+        System.out.println(allFibonacciNumbers);
+    }
+
+    private static void printThreeDifferentDigitNumbersFromArray(Array array) {
+        System.out.print("Трёхзначные числа из массива с разными цифрами: ");
+        String allThreeDifferentDigitNumbers = array.findAllThreeDifferentDigitNumbers();
+        System.out.println(allThreeDifferentDigitNumbers);
+    }
+
+    public static void checkArrayNotNull(Array array) throws NullArrayException {
+        if(array == null) {
+            throw new NullArrayException("Массив не определён.");
+        }
+    }
+
     public static void checkArrayCapacity(int arrayCapacity) throws IllegalArrayValueCapacityException {
         if (arrayCapacity < 0) {
             throw new IllegalArrayValueCapacityException("Размер массива не может принимать отрицательное значение.");
@@ -92,17 +141,5 @@ public class ArrayWrapperRunner {
         if (interval <= 0) {
             throw new IllegalIntervalException("Интервал должен принимать положительное значение.");
         }
-    }
-
-    public static void printReport(Array array) throws NullArrayException {
-        if (array == null) {
-            throw new NullArrayException("Массив для отчёта отсутствует.");
-        }
-        System.out.println(array.toString());
-        System.out.println("Минимальный элемент массива: " + array.findLimitElement(Limit.MIN_ELEMENT));
-        System.out.println("Максимальный элемент массива: " + array.findLimitElement(Limit.MAX_ELEMENT));
-        array.printPrimesNumbersFromArray();
-        array.printAllFibonacciNumbers();
-        array.printAllThreeDifferentDigitNumbers();
     }
 }

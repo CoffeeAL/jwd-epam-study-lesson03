@@ -1,5 +1,6 @@
 package by.epamtc.loiko.lesson03.util;
 
+import by.epamtc.loiko.lesson03.task01.Array;
 import by.epamtc.loiko.lesson03.task02.Limit;
 
 /**
@@ -8,7 +9,12 @@ import by.epamtc.loiko.lesson03.task02.Limit;
  */
 public class ArrayUtil {
 
-    public static void bubbleSortArray(int[] array) {
+    public static void bubbleSortArray(Array sourceArray) {
+        int[] array = sourceArray.getCurrentIntArray();
+        bubbleSortArray(array);
+    }
+
+    private static void bubbleSortArray(int[] array) {
         boolean needAnotherIteration = true;
         while (needAnotherIteration) {
             needAnotherIteration = false;
@@ -23,7 +29,12 @@ public class ArrayUtil {
         }
     }
 
-    public static void insertionSortArray(int[] array) {
+    public static void insertionSortArray(Array sourceArray) {
+        int[] array = sourceArray.getCurrentIntArray();
+        insertionSortArray(array);
+    }
+
+    private static void insertionSortArray(int[] array) {
         for (int i = 1; i < array.length; i++) {
             int currentElement = array[i];
             int j = i - 1;
@@ -35,7 +46,12 @@ public class ArrayUtil {
         }
     }
 
-    public static void mergeSort(int[] array, int bottomBorder, int upBorder) {
+    public static void mergeSort(Array sourceArray, int bottomBorder, int upBorder) {
+        int[] array = sourceArray.getCurrentIntArray();
+        mergeSort(array, bottomBorder, upBorder);
+    }
+
+    private static void mergeSort(int[] array, int bottomBorder, int upBorder) {
         if (upBorder <= bottomBorder) {
             return;
         }
@@ -64,7 +80,12 @@ public class ArrayUtil {
         }
     }
 
-    public static int findElement(int[] array, Limit limit) {
+    public static int findLimitElement(Array sourceArray, Limit limit) {
+        int[] array = sourceArray.getCurrentIntArray();
+        return findLimitElement(array, limit);
+    }
+
+    public static int findLimitElement(int[] array, Limit limit) {
         int result = array[0];
         for (int i = 1; i < array.length; i++) {
             if ((limit == Limit.MAX_ELEMENT && result < array[i]) || (limit == Limit.MIN_ELEMENT && result > array[i])) {

@@ -26,10 +26,10 @@ public class JaggedArrayRunner {
             int[][] sortedBySumElements = sortBySumElements(sourceArray, TypeSorting.ASCENDING);
             printReport(sortedBySumElements);
             int[][] sortedByMaxElementAscending = sortByLimitElements(sourceArray, Limit.MAX_ELEMENT,
-                    TypeSorting.ASCENDING);
+                                                                      TypeSorting.ASCENDING);
             printReport(sortedByMaxElementAscending);
             int[][] sortedByMinElementDescending = sortByLimitElements(sourceArray, Limit.MIN_ELEMENT,
-                    TypeSorting.DESCENDING);
+                                                                       TypeSorting.DESCENDING);
             printReport(sortedByMinElementDescending);
         } catch (NullArrayException | NullTypeSortingException | NullLimitException e) {
             throw new RuntimeException(e.getMessage());
@@ -38,11 +38,9 @@ public class JaggedArrayRunner {
 
     public static int[][] sortBySumElements(int[][] matrix, TypeSorting typeSorting)
             throws NullArrayException, NullTypeSortingException {
-        if (matrix == null) {
-            throw new NullArrayException("Массив для сортировки отсутствует.");
-        }
-        checkTypeSorting(typeSorting);
-        System.out.println("Сортировка массива по сумме элементов " + typeSorting.getName());
+        checkNotNullArray(matrix);
+        checkNotNullTypeSorting(typeSorting);
+        System.out.println("Сортировка массива по сумме элементов " + typeSorting.getType());
         boolean needIteration = true;
         while (needIteration) {
             needIteration = false;
@@ -60,12 +58,10 @@ public class JaggedArrayRunner {
 
     public static int[][] sortByLimitElements(int[][] matrix, Limit limit, TypeSorting typeSorting)
             throws NullArrayException, NullTypeSortingException, NullLimitException {
-        if (matrix == null) {
-            throw new NullArrayException("Массив для сортировки отсутствует.");
-        }
-        checkTypeSorting(typeSorting);
-        checkLimit(limit);
-        System.out.println("Сортировка массива " + limit.getLimit() + " " + typeSorting.getName());
+        checkNotNullArray(matrix);
+        checkNotNullTypeSorting(typeSorting);
+        checkNotNullLimit(limit);
+        System.out.println("Сортировка массива " + limit.getBorder() + " " + typeSorting.getType());
         boolean needIteration = true;
         while (needIteration) {
             needIteration = false;
@@ -97,7 +93,7 @@ public class JaggedArrayRunner {
         if (previous == null || next == null) {
             throw new NullArrayException("Массив отсутствует.");
         }
-        checkTypeSorting(typeSorting);
+        checkNotNullTypeSorting(typeSorting);
         return findSubarraySumElements(next) < findSubarraySumElements(previous) && typeSorting == TypeSorting.ASCENDING ||
                 findSubarraySumElements(next) > findSubarraySumElements(previous) && typeSorting == TypeSorting.DESCENDING;
     }
@@ -107,33 +103,37 @@ public class JaggedArrayRunner {
         if (previous == null || next == null) {
             throw new NullArrayException("Массив отсутствует.");
         }
-        checkTypeSorting(typeSorting);
-        checkLimit(limit);
-        return limit == Limit.MAX_ELEMENT && typeSorting == TypeSorting.ASCENDING && ArrayUtil.findElement(previous, Limit.MAX_ELEMENT) > ArrayUtil.findElement(next, Limit.MAX_ELEMENT) ||
-                limit == Limit.MAX_ELEMENT && typeSorting == TypeSorting.DESCENDING && ArrayUtil.findElement(previous, Limit.MAX_ELEMENT) < ArrayUtil.findElement(next, Limit.MAX_ELEMENT) ||
-                limit == Limit.MIN_ELEMENT && typeSorting == TypeSorting.ASCENDING && ArrayUtil.findElement(previous, Limit.MIN_ELEMENT) > ArrayUtil.findElement(next, Limit.MIN_ELEMENT) ||
-                limit == Limit.MIN_ELEMENT && typeSorting == TypeSorting.DESCENDING && ArrayUtil.findElement(previous, Limit.MIN_ELEMENT) < ArrayUtil.findElement(next, Limit.MIN_ELEMENT);
+        checkNotNullTypeSorting(typeSorting);
+        checkNotNullLimit(limit);
+        return limit == Limit.MAX_ELEMENT && typeSorting == TypeSorting.ASCENDING && ArrayUtil.findLimitElement(previous, Limit.MAX_ELEMENT) > ArrayUtil.findLimitElement(next, Limit.MAX_ELEMENT) ||
+                limit == Limit.MAX_ELEMENT && typeSorting == TypeSorting.DESCENDING && ArrayUtil.findLimitElement(previous, Limit.MAX_ELEMENT) < ArrayUtil.findLimitElement(next, Limit.MAX_ELEMENT) ||
+                limit == Limit.MIN_ELEMENT && typeSorting == TypeSorting.ASCENDING && ArrayUtil.findLimitElement(previous, Limit.MIN_ELEMENT) > ArrayUtil.findLimitElement(next, Limit.MIN_ELEMENT) ||
+                limit == Limit.MIN_ELEMENT && typeSorting == TypeSorting.DESCENDING && ArrayUtil.findLimitElement(previous, Limit.MIN_ELEMENT) < ArrayUtil.findLimitElement(next, Limit.MIN_ELEMENT);
     }
 
     public static void printReport(int[][] targetArray) throws NullArrayException {
-        if (targetArray == null) {
-            throw new NullArrayException("Массив для выведения на печать отсутствует.");
-        }
+        checkNotNullArray(targetArray);
         for (int[] array : targetArray) {
-            for (int number : array) {
-                System.out.print(number + " ");
+            for (int value : array) {
+                System.out.print(value + " ");
             }
             System.out.println();
         }
     }
 
-    public static void checkLimit(Limit limit) throws NullLimitException {
+    public static void checkNotNullLimit(Limit limit) throws NullLimitException {
         if (limit == null) {
             throw new NullLimitException("Не указан предел сортировки (по максимальному или по минимальному значению.");
         }
     }
 
-    public static void checkTypeSorting(TypeSorting typeSorting) throws NullTypeSortingException {
+    public static void checkNotNullArray(int[][] array) throws NullArrayException {
+        if (array == null) {
+            throw new NullArrayException("Массив не определён.");
+        }
+    }
+
+    public static void checkNotNullTypeSorting(TypeSorting typeSorting) throws NullTypeSortingException {
         if (typeSorting == null) {
             throw new NullTypeSortingException("Не указан тип сортировки.");
         }
